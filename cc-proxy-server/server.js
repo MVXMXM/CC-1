@@ -36,14 +36,21 @@ const openai = new OpenAI({
 });
 
 const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY
+    apiKey: process.env.ANTHROPIC_API_KEY
 });
+
+/** Cost-focused defaults; override via env if needed */
+const OPENAI_MODEL_CONCEPT = process.env.OPENAI_MODEL_CONCEPT || 'gpt-5.4-mini';
+const OPENAI_MODEL_EMOJI = process.env.OPENAI_MODEL_EMOJI || 'gpt-5.4-nano';
+/** Pinned snapshot avoids alias / routing issues on some keys and SDKs */
+const ANTHROPIC_MODEL_CONCEPT =
+  process.env.ANTHROPIC_MODEL_CONCEPT || 'claude-haiku-4-5-20251001';
 
 app.post('/api/openai/concept-calculator', async (req, res) => {
   try {
     const { messages } = req.body;
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: OPENAI_MODEL_CONCEPT,
       messages: [
         { role: "system", 
           content: 
@@ -67,7 +74,7 @@ app.post('/api/openai/concept-calculator', async (req, res) => {
       metadata: {
         endpoint: "operation"
       },
-      max_tokens: 1000,
+      max_completion_tokens: 1000,
     });
     res.json(completion);
   } catch (error) {
@@ -80,7 +87,7 @@ app.post('/api/openai/emoji-generator', async (req, res) => {
   try {
     const { messages } = req.body;
     const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
+      model: OPENAI_MODEL_EMOJI,
       messages: [
         { role: "system", content: "You are an AI that suggests a single emoji that best represents a given concept. Respond with only the emoji, nothing else." },
         ...messages
@@ -89,7 +96,7 @@ app.post('/api/openai/emoji-generator', async (req, res) => {
       metadata: {
         endpoint: "emojigen"
       },
-      max_tokens: 5,
+      max_completion_tokens: 64,
     });
 
     console.log('OpenAI API Response:', completion);
@@ -127,7 +134,7 @@ app.post('/api/anthropic/concept-calculator', async (req, res) => {
     const message = messages[0].content;
 
     const response = await anthropic.messages.create({
-      model: "claude-3-5-sonnet-20241022",
+      model: ANTHROPIC_MODEL_CONCEPT,
       max_tokens: 4096,
       messages: [{ role: "user", content: message }],
       system: `You are an expert in word arithmetic, tasked with interpreting and solving semantic equations. Your role is to calculate logical solutions based on mathematical operations applied to conceptual words. Each operation has a distinct effect, and results should vary according to the unique role of each operation. Below is a list of instructions for each operation.
@@ -144,11 +151,12 @@ app.post('/api/anthropic/concept-calculator', async (req, res) => {
     });
 
     console.log('Anthropic response:', response);
-    
-    if (response.content && response.content[0] && response.content[0].text) {
-      res.json({
-        content: response.content[0].text
-      });
+
+    const textBlock = Array.isArray(response.content)
+      ? response.content.find((b) => b.type === 'text')
+      : null;
+    if (textBlock?.text) {
+      res.json({ content: textBlock.text });
     } else {
       throw new Error('Unexpected response structure from Anthropic');
     }

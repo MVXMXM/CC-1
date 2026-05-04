@@ -256,7 +256,7 @@ function App() {
                     checked={selectedModel === 'gpt4'}
                     onChange={() => {}}
                   />
-                  <label htmlFor="gpt4">GPT4o mini</label>
+                  <label htmlFor="gpt4">GPT-5.4 mini</label>
                 </div>
                 <div className="SettingsMenuItem" 
                      onClick={(event) => {
@@ -274,7 +274,7 @@ function App() {
                     checked={selectedModel === 'claude'}
                     onChange={() => {}}
                   />
-                  <label htmlFor="claude">Claude 3.5 Sonnet</label>
+                  <label htmlFor="claude">Claude Haiku 4.5</label>
                 </div>
               </div>
             )}

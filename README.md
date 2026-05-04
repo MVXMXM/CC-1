@@ -18,7 +18,7 @@ As you’ll see if you take a look at the system prompt (see `cc-proxy-server/se
 `(÷) Division` Breakdown input concepts into specific, smaller components or fragments, with a narrower scope or purpose. The result should be more specific or focused, often resulting in a subset or fragment of the input concepts.
 
 ## Model(s)
-The current model is OpenAI’s `GPT4o-mini` but more will hopefully be added soon.
+Default API models aim for cost efficiency: OpenAI **GPT-5.4 mini** (concept solver), **GPT-5.4 nano** (emoji), and Anthropic **Claude Haiku 4.5** (alternate solver). The proxy can override these with the optional environment variables `OPENAI_MODEL_CONCEPT`, `OPENAI_MODEL_EMOJI`, and `ANTHROPIC_MODEL_CONCEPT`.
 
 <!-- ## Evals
 Add eval framework in here. -->
