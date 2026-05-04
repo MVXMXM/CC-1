@@ -157,6 +157,12 @@ input[type="radio"]:checked::after {
   overflow: scroll;
 }
 
+/* Scrollable <main> can receive focus on click in some UAs; it is not an interactive control */
+.mainContainer:focus,
+.mainContainer:focus-visible {
+  outline: none;
+}
+
 .calculator {
   display: flex;
   flex-direction: row;

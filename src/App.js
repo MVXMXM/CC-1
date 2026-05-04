@@ -16,6 +16,7 @@ function App() {
   const [calcEquation, setCalcEquation] = useState(false);
   const [aiSolution, setAiSolution] = useState('');
   const prevOperationsRef = useRef();
+  const tabNextConceptPendingRef = useRef(false);
   const [conceptEmojis, setConceptEmojis] = useState({});
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [selectedModel, setSelectedModel] = useState('gpt4');
@@ -140,6 +141,56 @@ function App() {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [settingsOpen]);
+
+  useEffect(() => {
+    const onMouseDownCapture = (e) => {
+      const main = document.querySelector('main.mainContainer');
+      const cal = document.querySelector('.calculator');
+      if (e.target === main || e.target === cal) {
+        if (!document.activeElement?.matches?.('input.conceptInput')) {
+          tabNextConceptPendingRef.current = true;
+        }
+      } else {
+        tabNextConceptPendingRef.current = false;
+      }
+    };
+
+    const onKeyDown = (e) => {
+      if (e.key !== 'Tab' || e.shiftKey) return;
+      if (document.activeElement?.matches?.('input.conceptInput')) {
+        tabNextConceptPendingRef.current = false;
+        return;
+      }
+
+      const el = document.activeElement;
+      const tag = el?.tagName;
+      if (tag === 'INPUT' || tag === 'BUTTON' || tag === 'SELECT' || tag === 'TEXTAREA') {
+        tabNextConceptPendingRef.current = false;
+        return;
+      }
+      if (tag === 'A' && el?.hasAttribute?.('href')) {
+        tabNextConceptPendingRef.current = false;
+        return;
+      }
+
+      const allowSteal =
+        tag === 'BODY' || tag === 'HTML' || tabNextConceptPendingRef.current;
+      if (!allowSteal) return;
+
+      const first = document.querySelector('.calculator input.conceptInput');
+      if (!first) return;
+      e.preventDefault();
+      tabNextConceptPendingRef.current = false;
+      first.focus();
+    };
+
+    document.addEventListener('mousedown', onMouseDownCapture, true);
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', onMouseDownCapture, true);
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, []);
 
   const getEquationString = () => {
     return operations
