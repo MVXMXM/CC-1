@@ -116,6 +116,8 @@ const ConceptInput = ({ value, onChange, onBlur, onDelete, currentEmoji, initial
             style={inputStyle}
         />
         <button
+            type="button"
+            tabIndex={-1}
             onClick={() => onDelete(id)}
             style={{
                 position: 'absolute',
