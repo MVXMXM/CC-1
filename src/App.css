@@ -6,7 +6,10 @@
   text-align: center;
   background-color: #FFFFFF;
   height: 100dvh;
-  width: 100vw;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 a {
@@ -19,7 +22,10 @@ a {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  width: calc( 100% - 40px );
+  box-sizing: border-box;
+  width: calc(100% - 40px);
+  max-width: 100%;
+  min-width: 0;
   height: 74px;
   font-family: "JetBrains Mono", monospace;
   color: #F15A22;
@@ -71,7 +77,8 @@ a {
 .SettingsDropdown {
   position: absolute;
   top: 40px;
-  right: -50%;
+  right: 0;
+  left: auto;
   background-color: white;
   border-radius: 24px;
   z-index: 100;
@@ -150,11 +157,15 @@ input[type="radio"]:checked::after {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
   width: calc(100% - 40px);
+  max-width: 100%;
+  min-width: 0;
   height: calc(100% - 40px);
   background-color: #F1F1F1;
   border-radius: 24px;
-  overflow: scroll;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 /* Scrollable <main> can receive focus on click in some UAs; it is not an interactive control */
@@ -170,7 +181,11 @@ input[type="radio"]:checked::after {
   justify-content: center;
   flex-wrap: wrap;
   gap: 16px;
-  margin: 40px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  padding: 40px 16px;
 }
 
 input[type="text"] {
