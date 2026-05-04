@@ -58,18 +58,30 @@ const Solution = ({ calcEquation, aiSolution, getSolution }) => {
         }
     }, [aiSolution, updateWidth]);
 
-    const handleClick = () => {
-        if (calcEquation && !showCalculation && !isLoading) {
-            setIsLoading(true);
-            if (solutionRef.current) {
-                solutionRef.current.style.width = updateWidth("loading");
-            }
-            setTimeout(async () => {
-                await getSolution();
-                setIsLoading(false);
-            }, 1000);
+    const runGetSolution = useCallback(() => {
+        if (!calcEquation || showCalculation || isLoading) return;
+        setIsLoading(true);
+        if (solutionRef.current) {
+            solutionRef.current.style.width = updateWidth("loading");
         }
-    };
+        setTimeout(async () => {
+            await getSolution();
+            setIsLoading(false);
+        }, 1000);
+    }, [calcEquation, showCalculation, isLoading, getSolution, updateWidth]);
+
+    useEffect(() => {
+        const onKeyDown = (e) => {
+            if (e.key !== 'Enter') return;
+            if (!calcEquation || showCalculation || isLoading) return;
+            const el = e.target;
+            if (el?.tagName !== 'INPUT' || !el.classList.contains('conceptInput')) return;
+            e.preventDefault();
+            runGetSolution();
+        };
+        window.addEventListener('keydown', onKeyDown);
+        return () => window.removeEventListener('keydown', onKeyDown);
+    }, [calcEquation, showCalculation, isLoading, runGetSolution]);
 
     const solutionStyle = {
         transition: 'color 0.1s ease, background 0.3s ease, opacity 0.3s ease, transform 0.3s ease, width 0.3s ease',
@@ -106,7 +118,7 @@ const Solution = ({ calcEquation, aiSolution, getSolution }) => {
     };
 
     return (
-        <div ref={solutionRef} className="solution" style={solutionStyle} onClick={handleClick}>
+        <div ref={solutionRef} className="solution" style={solutionStyle} onClick={runGetSolution}>
             {getDisplayContent()}
         </div>
     );
