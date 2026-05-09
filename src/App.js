@@ -15,6 +15,7 @@ function App() {
   ]);
   const [calcEquation, setCalcEquation] = useState(false);
   const [aiSolution, setAiSolution] = useState('');
+  const [solutionEmoji, setSolutionEmoji] = useState('');
   const prevOperationsRef = useRef();
   const tabNextConceptPendingRef = useRef(false);
   const [conceptEmojis, setConceptEmojis] = useState({});
@@ -118,12 +119,14 @@ function App() {
       setCalcEquation(true);
       if (inputsChanged) {
         setAiSolution('');
+        setSolutionEmoji('');
         setCalcEquation(false);
         setTimeout(() => setCalcEquation(true), 0);
       }
     } else {
       setCalcEquation(false);
       setAiSolution('');
+      setSolutionEmoji('');
     }
     prevOperationsRef.current = JSON.parse(JSON.stringify(operations));
   }, [operations]);
@@ -215,6 +218,15 @@ function App() {
     try {
       const aiResponse = await API.getSolution(equation, selectedModel);
       console.log(`${equation} = ${aiResponse}`);
+
+      try {
+        const emoji = await API.getConceptEmoji(aiResponse);
+        setSolutionEmoji(emoji);
+      } catch (emojiError) {
+        console.error('Error getting solution emoji:', emojiError);
+        setSolutionEmoji('');
+      }
+
       setAiSolution(aiResponse);
 
       try {
@@ -227,6 +239,7 @@ function App() {
     } catch (error) {
       console.error('Error getting AI solution:', error);
       setAiSolution('Error: Unable to get solution from AI');
+      setSolutionEmoji('');
     }
   };
 
@@ -307,9 +320,10 @@ function App() {
               />
             </React.Fragment>
           ))}
-          <Solution 
-            calcEquation={calcEquation} 
+          <Solution
+            calcEquation={calcEquation}
             aiSolution={aiSolution}
+            solutionEmoji={solutionEmoji}
             getSolution={handleGetSolution}
           />
         </div>

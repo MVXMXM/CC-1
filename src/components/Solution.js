@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
 import '../App.css';
 
-const Solution = ({ calcEquation, aiSolution, getSolution }) => {
+const Solution = ({ calcEquation, aiSolution, solutionEmoji, getSolution }) => {
     // Remove the unused state variable
     // const [displayedResult, setDisplayedResult] = useState('');
     const [showCalculation, setShowCalculation] = useState(false);
@@ -51,12 +51,13 @@ const Solution = ({ calcEquation, aiSolution, getSolution }) => {
             setShowCalculation(true);
             setIsLoading(false);
             if (solutionRef.current) {
-                solutionRef.current.style.width = updateWidth(aiSolution);
+                const display = solutionEmoji ? `${solutionEmoji} ${aiSolution}` : aiSolution;
+                solutionRef.current.style.width = updateWidth(display);
             }
         } else {
             setShowCalculation(false);
         }
-    }, [aiSolution, updateWidth]);
+    }, [aiSolution, solutionEmoji, updateWidth]);
 
     const runGetSolution = useCallback(() => {
         if (!calcEquation || showCalculation || isLoading) return;
@@ -101,7 +102,7 @@ const Solution = ({ calcEquation, aiSolution, getSolution }) => {
             );
         }
         if (showCalculation && aiSolution) {
-            return aiSolution;
+            return solutionEmoji ? `${solutionEmoji} ${aiSolution}` : aiSolution;
         }
         if (calcEquation) {
             return (
@@ -127,6 +128,7 @@ const Solution = ({ calcEquation, aiSolution, getSolution }) => {
 Solution.propTypes = {
     calcEquation: PropTypes.bool.isRequired,
     aiSolution: PropTypes.string,
+    solutionEmoji: PropTypes.string,
     getSolution: PropTypes.func.isRequired,
 };
 
