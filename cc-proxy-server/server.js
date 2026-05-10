@@ -15,10 +15,13 @@ const allowedOrigins = [
   'https://www.conceptcalculator.ai'
 ];
 
+const isVercelPreviewOrigin = (origin) =>
+  process.env.VERCEL_ENV === 'preview' && /^https:\/\/[\w-]+\.vercel\.app$/.test(origin);
+
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production'
     ? function (origin, callback) {
-        if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+        if (!origin || allowedOrigins.indexOf(origin) !== -1 || isVercelPreviewOrigin(origin)) {
           callback(null, true);
         } else {
           callback(new Error('Not allowed by CORS'));
