@@ -15,6 +15,16 @@ const ConceptInput = ({ value, onChange, onBlur, onDelete, currentEmoji, initial
     const paddingLeft = isMobile ? 56 : 70;
     const focusWidth = isMobile ? '110px' : '130px';
     const defaultInputWidth = initialWidth;
+    const [viewportWidth, setViewportWidth] = useState(
+        typeof window !== 'undefined' ? window.innerWidth : 1024
+    );
+
+    useEffect(() => {
+        if (typeof window === 'undefined') return undefined;
+        const onResize = () => setViewportWidth(window.innerWidth);
+        window.addEventListener('resize', onResize);
+        return () => window.removeEventListener('resize', onResize);
+    }, []);
 
     const calculateTextWidth = useCallback((text) => {
         const canvas = document.createElement('canvas');
@@ -25,11 +35,17 @@ const ConceptInput = ({ value, onChange, onBlur, onDelete, currentEmoji, initial
     }, [fontSize]);
 
     const updateWidth = useCallback((text) => {
+        const sideInset = isMobile ? 32 : 80;
+        const maxAllowed = Math.max(120, viewportWidth - sideInset);
         if (!text.trim() && !isFocused) {
+            const parsedDefault = parseInt(defaultInputWidth, 10) || 0;
+            const cappedDefault = parsedDefault > 0
+                ? `${Math.min(parsedDefault, maxAllowed)}px`
+                : defaultInputWidth;
             if (inputRef.current) {
-                inputRef.current.style.width = defaultInputWidth;
+                inputRef.current.style.width = cappedDefault;
             }
-            return defaultInputWidth;
+            return cappedDefault;
         }
         const emojiWidth = isMobile ? 32 : 40;
         const padding = isMobile ? 48 : 64;
@@ -37,12 +53,12 @@ const ConceptInput = ({ value, onChange, onBlur, onDelete, currentEmoji, initial
         const minWidth = isMobile ? 100 : 120;
         const textWidth = Math.ceil(calculateTextWidth(text));
         const calculatedWidth = textWidth + emojiWidth + padding + deleteButtonWidth;
-        const newWidth = Math.max(minWidth, calculatedWidth);
+        const newWidth = Math.min(Math.max(minWidth, calculatedWidth), maxAllowed);
         if (inputRef.current) {
             inputRef.current.style.width = `${newWidth}px`;
         }
         return `${newWidth}px`;
-    }, [calculateTextWidth, isFocused, defaultInputWidth, isMobile]);
+    }, [calculateTextWidth, isFocused, defaultInputWidth, isMobile, viewportWidth]);
 
     useEffect(() => {
         const newWidth = updateWidth(inputValue);
@@ -86,9 +102,11 @@ const ConceptInput = ({ value, onChange, onBlur, onDelete, currentEmoji, initial
     };
 
     return (
-        <div style={{ 
-            position: 'relative', 
-            display: 'inline-block' 
+        <div style={{
+            position: 'relative',
+            display: 'inline-block',
+            maxWidth: '100%',
+            minWidth: 0,
         }}>
         <span
             role="img"

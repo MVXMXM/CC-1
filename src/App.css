@@ -258,6 +258,9 @@ input::placeholder {
   font-weight: 500;
   line-height: normal;
   border: 0px;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  min-width: 0;
 }
 
 .SettingsMenuItem label {

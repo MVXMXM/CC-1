@@ -10,6 +10,16 @@ const Solution = ({ calcEquation, aiSolution, solutionEmoji, getSolution }) => {
     const isMobile = useIsMobile();
     const fontSize = isMobile ? 22 : 32;
     const defaultWidth = isMobile ? '120px' : '150px';
+    const [viewportWidth, setViewportWidth] = useState(
+        typeof window !== 'undefined' ? window.innerWidth : 1024
+    );
+
+    useEffect(() => {
+        if (typeof window === 'undefined') return undefined;
+        const onResize = () => setViewportWidth(window.innerWidth);
+        window.addEventListener('resize', onResize);
+        return () => window.removeEventListener('resize', onResize);
+    }, []);
 
     const calculateTextWidth = useCallback((text) => {
         const canvas = document.createElement('canvas');
@@ -22,12 +32,14 @@ const Solution = ({ calcEquation, aiSolution, solutionEmoji, getSolution }) => {
         if (content === "???") return isMobile ? '40px' : '50px';
         if (content === "calculate") return isMobile ? '100px' : '130px';
         if (content === "loading") return isMobile ? '120px' : '150px';
-        const padding = 8;
+        const sideInset = isMobile ? 64 : 112;
+        const maxAllowed = Math.max(60, viewportWidth - sideInset);
+        const padding = isMobile ? 32 : 48;
         const textWidth = calculateTextWidth(content);
         const calculatedWidth = textWidth + padding;
-        const newWidth = Math.max(calculatedWidth, 30);
+        const newWidth = Math.min(Math.max(calculatedWidth, 30), maxAllowed);
         return `${newWidth}px`;
-    }, [calculateTextWidth, isMobile]);
+    }, [calculateTextWidth, isMobile, viewportWidth]);
 
     useEffect(() => {
         setShowCalculation(false);
