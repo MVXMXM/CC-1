@@ -41,10 +41,6 @@ const Operation = ({ character, onCharacterChange, addOperation }) => {
     return () => window.removeEventListener('resize', recompute);
   }, [isExpanded, buttonSize, menuGap]);
 
-  const toggleMenu = () => {
-    setIsExpanded((prev) => !prev);
-  };
-
   useEffect(() => {
     setLocalCharacter(character);
   }, [character]);
@@ -69,7 +65,51 @@ const Operation = ({ character, onCharacterChange, addOperation }) => {
     if (addOperation) {
       addOperation();
     }
+    const opNode = operationRef.current;
+    setTimeout(() => {
+      if (!opNode) return;
+      const inputs = Array.from(
+        document.querySelectorAll('.calculator input.conceptInput')
+      );
+      const next = inputs.find(
+        (input) =>
+          opNode.compareDocumentPosition(input) &
+          Node.DOCUMENT_POSITION_FOLLOWING
+      );
+      if (next) next.focus();
+    }, 0);
   };
+
+  useEffect(() => {
+    if (!isExpanded) return;
+
+    const keyMap = {
+      '+': '+',
+      '-': '-',
+      '*': '×',
+      'x': '×',
+      'X': '×',
+      '/': '÷',
+    };
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        setIsExpanded(false);
+        return;
+      }
+      const value = keyMap[event.key];
+      if (value) {
+        event.preventDefault();
+        handleButtonClick(value);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isExpanded]);
 
   const operationButtonStyle = {
     zIndex: 900,
@@ -129,7 +169,10 @@ const Operation = ({ character, onCharacterChange, addOperation }) => {
       <div
         ref={operationRef}
         className={`operation${isExpanded ? ' is-expanded' : ''}`}
-        onClick={toggleMenu}
+        tabIndex={0}
+        onClick={() => setIsExpanded(true)}
+        onFocus={() => setIsExpanded(true)}
+        onBlur={() => setIsExpanded(false)}
         style={{
           position: 'relative',
           width: `${buttonSize}px`,
@@ -138,6 +181,7 @@ const Operation = ({ character, onCharacterChange, addOperation }) => {
           alignItems: 'center',
           justifyContent: 'center',
           flexShrink: 0,
+          outline: 'none',
         }}
       >
         <div style={operationButtonStyle} className="operationButton">{localCharacter}</div>
