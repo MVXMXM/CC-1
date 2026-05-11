@@ -122,7 +122,20 @@ const Operation = ({ character, onCharacterChange, addOperation }) => {
   };
 
   return (
-      <div ref={operationRef} className="operation" onClick={toggleMenu} style={{ position: 'relative' }}>
+      <div
+        ref={operationRef}
+        className="operation"
+        onClick={toggleMenu}
+        style={{
+          position: 'relative',
+          width: `${buttonSize}px`,
+          height: `${buttonSize}px`,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexShrink: 0,
+        }}
+      >
         <div style={operationButtonStyle} className="operationButton">{localCharacter}</div>
         {isExpanded && (
           <div style={operationMenuStyle}>
