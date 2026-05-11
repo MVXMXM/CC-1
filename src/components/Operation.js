@@ -71,6 +71,36 @@ const Operation = ({ character, onCharacterChange, addOperation }) => {
     }
   };
 
+  useEffect(() => {
+    if (!isExpanded) return;
+
+    const keyMap = {
+      '+': '+',
+      '-': '-',
+      '*': '×',
+      'x': '×',
+      'X': '×',
+      '/': '÷',
+    };
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        setIsExpanded(false);
+        return;
+      }
+      const value = keyMap[event.key];
+      if (value) {
+        event.preventDefault();
+        handleButtonClick(value);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isExpanded]);
+
   const operationButtonStyle = {
     zIndex: 900,
     width: isExpanded ? '10px' : `${buttonSize}px`,
