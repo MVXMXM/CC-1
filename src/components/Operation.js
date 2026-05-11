@@ -1,9 +1,45 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import '../App.css';
+import useIsMobile from '../hooks/useIsMobile.js';
 
 const Operation = ({ character, onCharacterChange, addOperation }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [localCharacter, setLocalCharacter] = useState(character);
+  const [menuOffsetX, setMenuOffsetX] = useState(0);
+  const [useColumn, setUseColumn] = useState(false);
+  const operationRef = useRef(null);
+  const isMobile = useIsMobile();
+  const buttonSize = isMobile ? 56 : 80;
+  const buttonFont = isMobile ? 24 : 32;
+  const menuGap = isMobile ? 14 : 20;
+
+  useEffect(() => {
+    if (!isExpanded) {
+      setMenuOffsetX(0);
+      setUseColumn(false);
+      return undefined;
+    }
+    const recompute = () => {
+      if (!operationRef.current || typeof window === 'undefined') return;
+      const rect = operationRef.current.getBoundingClientRect();
+      const center = rect.left + rect.width / 2;
+      const gridHalfWidth = buttonSize + menuGap / 2;
+      const margin = 8;
+      const viewportW = window.innerWidth;
+      const gridOverflowsLeft = center - gridHalfWidth < margin;
+      const gridOverflowsRight = center + gridHalfWidth > viewportW - margin;
+      if (gridOverflowsLeft || gridOverflowsRight) {
+        setUseColumn(true);
+        setMenuOffsetX(0);
+      } else {
+        setUseColumn(false);
+        setMenuOffsetX(0);
+      }
+    };
+    recompute();
+    window.addEventListener('resize', recompute);
+    return () => window.removeEventListener('resize', recompute);
+  }, [isExpanded, buttonSize, menuGap]);
 
   const toggleMenu = () => {
     setIsExpanded((prev) => !prev);
@@ -37,17 +73,17 @@ const Operation = ({ character, onCharacterChange, addOperation }) => {
 
   const operationButtonStyle = {
     zIndex: 900,
-    width: isExpanded ? '10px' : '80px',
-    height: isExpanded ? '10px' : '80px',
+    width: isExpanded ? '10px' : `${buttonSize}px`,
+    height: isExpanded ? '10px' : `${buttonSize}px`,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#ffffff',
-    borderRadius: '80px',
+    borderRadius: `${buttonSize}px`,
     color: '#F15A22',
     textAlign: 'center',
     fontFamily: '"DM Sans"',
-    fontSize: isExpanded ? '0px' : '32px',
+    fontSize: isExpanded ? '0px' : `${buttonFont}px`,
     fontStyle: 'normal',
     fontWeight: 700,
     lineHeight: 'normal',
@@ -56,20 +92,20 @@ const Operation = ({ character, onCharacterChange, addOperation }) => {
 
   const operationMenuStyle = {
     opacity: isExpanded ? '1' : '0',
-    position: 'absolute', 
-    top: '50%', 
-    left: '50%', 
-    transform: 'translate(-50%, -50%)',
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: `translate(calc(-50% + ${menuOffsetX}px), -50%)`,
     display: 'flex',
     flexDirection: 'column',
-    gap: '20px',
+    gap: `${menuGap}px`,
     zIndex: '9999',
     transition: 'opacity 0.1s ease, height 0.15s ease, width 0.15s ease',
   };
 
   const operationMenuButtonStyle = {
-    width: isExpanded ? '80px' : '0px',
-    height: isExpanded ? '80px' : '0px',
+    width: isExpanded ? `${buttonSize}px` : '0px',
+    height: isExpanded ? `${buttonSize}px` : '0px',
     opacity: isExpanded ? '1' : '0',
     pointerEvents: isExpanded ? 'auto' : 'none',
     cursor: isExpanded ? 'pointer' : 'default',
@@ -77,11 +113,11 @@ const Operation = ({ character, onCharacterChange, addOperation }) => {
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#ffffff',
-    borderRadius: '80px',
+    borderRadius: `${buttonSize}px`,
     color: '#F15A22',
     textAlign: 'center',
     fontFamily: '"DM Sans"',
-    fontSize: '32px',
+    fontSize: `${buttonFont}px`,
     fontStyle: 'normal',
     fontWeight: 700,
     lineHeight: 'normal',
@@ -90,46 +126,77 @@ const Operation = ({ character, onCharacterChange, addOperation }) => {
   };
 
   return (
-      <div className="operation" onClick={toggleMenu} style={{ position: 'relative' }}>
+      <div
+        ref={operationRef}
+        className={`operation${isExpanded ? ' is-expanded' : ''}`}
+        onClick={toggleMenu}
+        style={{
+          position: 'relative',
+          width: `${buttonSize}px`,
+          height: `${buttonSize}px`,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexShrink: 0,
+        }}
+      >
         <div style={operationButtonStyle} className="operationButton">{localCharacter}</div>
         {isExpanded && (
           <div style={operationMenuStyle}>
-            <div style={{ display: 'flex', flexDirection: 'row', gap: '20px' }}>
-              <div 
-                style={operationMenuButtonStyle} className="operationMenuButton"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleButtonClick('+');
-                }}>
-                  +
-              </div>
-              <div 
-                style={operationMenuButtonStyle} className="operationMenuButton"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleButtonClick('-');
-                }}>
-                  -
-              </div>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'row', gap: '16px' }}>
-              <div 
-                  style={operationMenuButtonStyle} className="operationMenuButton"
+            {useColumn ? (
+              ['+', '-', '×', '÷'].map((op) => (
+                <div
+                  key={op}
+                  style={operationMenuButtonStyle}
+                  className="operationMenuButton"
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleButtonClick('×');
-                  }}>
-                    ×
+                    handleButtonClick(op);
+                  }}
+                >
+                  {op}
                 </div>
-                <div 
-                  style={operationMenuButtonStyle} className="operationMenuButton"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleButtonClick('÷');
-                  }}>
-                    ÷
+              ))
+            ) : (
+              <>
+                <div style={{ display: 'flex', flexDirection: 'row', gap: `${menuGap}px` }}>
+                  <div
+                    style={operationMenuButtonStyle} className="operationMenuButton"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleButtonClick('+');
+                    }}>
+                      +
+                  </div>
+                  <div
+                    style={operationMenuButtonStyle} className="operationMenuButton"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleButtonClick('-');
+                    }}>
+                      -
+                  </div>
                 </div>
-            </div>
+                <div style={{ display: 'flex', flexDirection: 'row', gap: `${menuGap}px` }}>
+                  <div
+                    style={operationMenuButtonStyle} className="operationMenuButton"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleButtonClick('×');
+                    }}>
+                      ×
+                  </div>
+                  <div
+                    style={operationMenuButtonStyle} className="operationMenuButton"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleButtonClick('÷');
+                    }}>
+                      ÷
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         )}
       </div>
