@@ -89,7 +89,10 @@ const Solution = ({ calcEquation, aiSolution, solutionEmoji, getSolution }) => {
             if (e.key !== 'Enter') return;
             if (!calcEquation || showCalculation || isLoading) return;
             const el = e.target;
-            if (el?.tagName !== 'INPUT' || !el.classList.contains('conceptInput')) return;
+            const isConceptInput =
+                el?.tagName === 'INPUT' && el.classList?.contains?.('conceptInput');
+            const isOperationWrapper = el?.classList?.contains?.('operation');
+            if (!isConceptInput && !isOperationWrapper) return;
             e.preventDefault();
             runGetSolution();
         };
