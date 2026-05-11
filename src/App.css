@@ -240,6 +240,11 @@ input::placeholder {
   outline: 2px solid #F15A22;
 }
 
+.operation.is-expanded,
+.operation.is-expanded:hover {
+  outline: none;
+}
+
 .solution {
   display: flex;
   height: auto;

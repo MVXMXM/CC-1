@@ -124,7 +124,7 @@ const Operation = ({ character, onCharacterChange, addOperation }) => {
   return (
       <div
         ref={operationRef}
-        className="operation"
+        className={`operation${isExpanded ? ' is-expanded' : ''}`}
         onClick={toggleMenu}
         style={{
           position: 'relative',
