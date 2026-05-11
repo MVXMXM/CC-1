@@ -6,6 +6,7 @@ const Operation = ({ character, onCharacterChange, addOperation }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [localCharacter, setLocalCharacter] = useState(character);
   const [menuOffsetX, setMenuOffsetX] = useState(0);
+  const [useColumn, setUseColumn] = useState(false);
   const operationRef = useRef(null);
   const isMobile = useIsMobile();
   const buttonSize = isMobile ? 56 : 80;
@@ -15,22 +16,25 @@ const Operation = ({ character, onCharacterChange, addOperation }) => {
   useEffect(() => {
     if (!isExpanded) {
       setMenuOffsetX(0);
+      setUseColumn(false);
       return undefined;
     }
     const recompute = () => {
       if (!operationRef.current || typeof window === 'undefined') return;
       const rect = operationRef.current.getBoundingClientRect();
       const center = rect.left + rect.width / 2;
-      const menuHalfWidth = buttonSize + menuGap / 2;
+      const gridHalfWidth = buttonSize + menuGap / 2;
       const margin = 8;
       const viewportW = window.innerWidth;
-      let offset = 0;
-      if (center - menuHalfWidth < margin) {
-        offset = margin - (center - menuHalfWidth);
-      } else if (center + menuHalfWidth > viewportW - margin) {
-        offset = (viewportW - margin) - (center + menuHalfWidth);
+      const gridOverflowsLeft = center - gridHalfWidth < margin;
+      const gridOverflowsRight = center + gridHalfWidth > viewportW - margin;
+      if (gridOverflowsLeft || gridOverflowsRight) {
+        setUseColumn(true);
+        setMenuOffsetX(0);
+      } else {
+        setUseColumn(false);
+        setMenuOffsetX(0);
       }
-      setMenuOffsetX(offset);
     };
     recompute();
     window.addEventListener('resize', recompute);
@@ -139,42 +143,60 @@ const Operation = ({ character, onCharacterChange, addOperation }) => {
         <div style={operationButtonStyle} className="operationButton">{localCharacter}</div>
         {isExpanded && (
           <div style={operationMenuStyle}>
-            <div style={{ display: 'flex', flexDirection: 'row', gap: `${menuGap}px` }}>
-              <div 
-                style={operationMenuButtonStyle} className="operationMenuButton"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleButtonClick('+');
-                }}>
-                  +
-              </div>
-              <div 
-                style={operationMenuButtonStyle} className="operationMenuButton"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleButtonClick('-');
-                }}>
-                  -
-              </div>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'row', gap: `${menuGap}px` }}>
-              <div 
-                  style={operationMenuButtonStyle} className="operationMenuButton"
+            {useColumn ? (
+              ['+', '-', '×', '÷'].map((op) => (
+                <div
+                  key={op}
+                  style={operationMenuButtonStyle}
+                  className="operationMenuButton"
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleButtonClick('×');
-                  }}>
-                    ×
+                    handleButtonClick(op);
+                  }}
+                >
+                  {op}
                 </div>
-                <div 
-                  style={operationMenuButtonStyle} className="operationMenuButton"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleButtonClick('÷');
-                  }}>
-                    ÷
+              ))
+            ) : (
+              <>
+                <div style={{ display: 'flex', flexDirection: 'row', gap: `${menuGap}px` }}>
+                  <div
+                    style={operationMenuButtonStyle} className="operationMenuButton"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleButtonClick('+');
+                    }}>
+                      +
+                  </div>
+                  <div
+                    style={operationMenuButtonStyle} className="operationMenuButton"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleButtonClick('-');
+                    }}>
+                      -
+                  </div>
                 </div>
-            </div>
+                <div style={{ display: 'flex', flexDirection: 'row', gap: `${menuGap}px` }}>
+                  <div
+                    style={operationMenuButtonStyle} className="operationMenuButton"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleButtonClick('×');
+                    }}>
+                      ×
+                  </div>
+                  <div
+                    style={operationMenuButtonStyle} className="operationMenuButton"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleButtonClick('÷');
+                    }}>
+                      ÷
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         )}
       </div>
