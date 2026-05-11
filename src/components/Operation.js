@@ -1,14 +1,41 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import '../App.css';
 import useIsMobile from '../hooks/useIsMobile.js';
 
 const Operation = ({ character, onCharacterChange, addOperation }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [localCharacter, setLocalCharacter] = useState(character);
+  const [menuOffsetX, setMenuOffsetX] = useState(0);
+  const operationRef = useRef(null);
   const isMobile = useIsMobile();
   const buttonSize = isMobile ? 56 : 80;
   const buttonFont = isMobile ? 24 : 32;
   const menuGap = isMobile ? 14 : 20;
+
+  useEffect(() => {
+    if (!isExpanded) {
+      setMenuOffsetX(0);
+      return undefined;
+    }
+    const recompute = () => {
+      if (!operationRef.current || typeof window === 'undefined') return;
+      const rect = operationRef.current.getBoundingClientRect();
+      const center = rect.left + rect.width / 2;
+      const menuHalfWidth = buttonSize + menuGap / 2;
+      const margin = 8;
+      const viewportW = window.innerWidth;
+      let offset = 0;
+      if (center - menuHalfWidth < margin) {
+        offset = margin - (center - menuHalfWidth);
+      } else if (center + menuHalfWidth > viewportW - margin) {
+        offset = (viewportW - margin) - (center + menuHalfWidth);
+      }
+      setMenuOffsetX(offset);
+    };
+    recompute();
+    window.addEventListener('resize', recompute);
+    return () => window.removeEventListener('resize', recompute);
+  }, [isExpanded, buttonSize, menuGap]);
 
   const toggleMenu = () => {
     setIsExpanded((prev) => !prev);
@@ -64,7 +91,7 @@ const Operation = ({ character, onCharacterChange, addOperation }) => {
     position: 'absolute',
     top: '50%',
     left: '50%',
-    transform: 'translate(-50%, -50%)',
+    transform: `translate(calc(-50% + ${menuOffsetX}px), -50%)`,
     display: 'flex',
     flexDirection: 'column',
     gap: `${menuGap}px`,
@@ -95,7 +122,7 @@ const Operation = ({ character, onCharacterChange, addOperation }) => {
   };
 
   return (
-      <div className="operation" onClick={toggleMenu} style={{ position: 'relative' }}>
+      <div ref={operationRef} className="operation" onClick={toggleMenu} style={{ position: 'relative' }}>
         <div style={operationButtonStyle} className="operationButton">{localCharacter}</div>
         {isExpanded && (
           <div style={operationMenuStyle}>
