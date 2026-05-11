@@ -38,28 +38,28 @@ const ConceptInput = ({ value, onChange, onBlur, onDelete, currentEmoji, initial
     const updateWidth = useCallback((text) => {
         const sideInset = isMobile ? 32 : 80;
         const maxAllowed = Math.max(120, viewportWidth - sideInset);
-        if (!text.trim() && !isFocused) {
-            const parsedDefault = parseInt(defaultInputWidth, 10) || 0;
-            const cappedDefault = parsedDefault > 0
-                ? `${Math.min(parsedDefault, maxAllowed)}px`
-                : defaultInputWidth;
-            if (inputRef.current) {
-                inputRef.current.style.width = cappedDefault;
-            }
-            return cappedDefault;
-        }
-        const emojiWidth = isMobile ? 32 : 40;
-        const padding = isMobile ? 48 : 64;
-        const deleteButtonWidth = 24;
+        const chrome = paddingLeft + paddingRight;
         const minWidth = isMobile ? 100 : 120;
+
+        if (!text.trim() && !isFocused) {
+            const placeholderWidth = Math.ceil(calculateTextWidth(placeholder));
+            const parsedDefault = parseInt(defaultInputWidth, 10) || 0;
+            const fitsPlaceholder = placeholderWidth + chrome + 8;
+            const target = Math.max(parsedDefault, fitsPlaceholder, minWidth);
+            const capped = `${Math.min(target, maxAllowed)}px`;
+            if (inputRef.current) {
+                inputRef.current.style.width = capped;
+            }
+            return capped;
+        }
         const textWidth = Math.ceil(calculateTextWidth(text));
-        const calculatedWidth = textWidth + emojiWidth + padding + deleteButtonWidth;
+        const calculatedWidth = textWidth + chrome + 8;
         const newWidth = Math.min(Math.max(minWidth, calculatedWidth), maxAllowed);
         if (inputRef.current) {
             inputRef.current.style.width = `${newWidth}px`;
         }
         return `${newWidth}px`;
-    }, [calculateTextWidth, isFocused, defaultInputWidth, isMobile, viewportWidth]);
+    }, [calculateTextWidth, isFocused, defaultInputWidth, isMobile, viewportWidth, paddingLeft, paddingRight, placeholder]);
 
     useEffect(() => {
         const newWidth = updateWidth(inputValue);

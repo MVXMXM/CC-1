@@ -23,7 +23,7 @@ function App() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [selectedModel, setSelectedModel] = useState('gpt4');
   const isMobile = useIsMobile();
-  const conceptInitialWidth = isMobile ? '220px' : '316px';
+  const conceptInitialWidth = isMobile ? '240px' : '316px';
 
   const handleCharacterChange = useCallback((id, newOperation) => {
     setOperations(prevOps => {
