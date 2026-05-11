@@ -13,6 +13,7 @@ const ConceptInput = ({ value, onChange, onBlur, onDelete, currentEmoji, initial
     const fontSize = isMobile ? 22 : 32;
     const emojiSize = isMobile ? 24 : 32;
     const paddingLeft = isMobile ? 56 : 70;
+    const paddingRight = isMobile ? 44 : 56;
     const focusWidth = isMobile ? '110px' : '130px';
     const defaultInputWidth = initialWidth;
     const [viewportWidth, setViewportWidth] = useState(
@@ -81,6 +82,7 @@ const ConceptInput = ({ value, onChange, onBlur, onDelete, currentEmoji, initial
         transition: 'width 0.1s, outline 0.05s',
         outline: (isFocused || isHovered) ? '2px solid #F15A22' : '0px solid #F15A22',
         paddingLeft: `${paddingLeft}px`,
+        paddingRight: `${paddingRight}px`,
         boxSizing: 'border-box',
         fontWeight: inputValue ? 500 : 300,
         maxWidth: '100%',
