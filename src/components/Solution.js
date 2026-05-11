@@ -34,7 +34,7 @@ const Solution = ({ calcEquation, aiSolution, solutionEmoji, getSolution }) => {
         if (content === "loading") return isMobile ? '120px' : '150px';
         const sideInset = isMobile ? 64 : 112;
         const maxAllowed = Math.max(60, viewportWidth - sideInset);
-        const padding = isMobile ? 32 : 48;
+        const padding = 8;
         const textWidth = calculateTextWidth(content);
         const calculatedWidth = textWidth + padding;
         const newWidth = Math.min(Math.max(calculatedWidth, 30), maxAllowed);
