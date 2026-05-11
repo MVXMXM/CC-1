@@ -1,32 +1,33 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
 import '../App.css';
+import useIsMobile from '../hooks/useIsMobile.js';
 
 const Solution = ({ calcEquation, aiSolution, solutionEmoji, getSolution }) => {
-    // Remove the unused state variable
-    // const [displayedResult, setDisplayedResult] = useState('');
     const [showCalculation, setShowCalculation] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const solutionRef = useRef(null);
-    const defaultWidth = '150px';
+    const isMobile = useIsMobile();
+    const fontSize = isMobile ? 22 : 32;
+    const defaultWidth = isMobile ? '120px' : '150px';
 
     const calculateTextWidth = useCallback((text) => {
         const canvas = document.createElement('canvas');
         const context = canvas.getContext('2d');
-        context.font = '32px Helvetica';
+        context.font = `${fontSize}px Helvetica`;
         return Math.ceil(context.measureText(text).width);
-    }, []);
+    }, [fontSize]);
 
     const updateWidth = useCallback((content) => {
-        if (content === "???") return '50px';
-        if (content === "calculate") return '130px';
-        if (content === "loading") return '150px';
+        if (content === "???") return isMobile ? '40px' : '50px';
+        if (content === "calculate") return isMobile ? '100px' : '130px';
+        if (content === "loading") return isMobile ? '120px' : '150px';
         const padding = 8;
         const textWidth = calculateTextWidth(content);
         const calculatedWidth = textWidth + padding;
         const newWidth = Math.max(calculatedWidth, 30);
         return `${newWidth}px`;
-    }, [calculateTextWidth]);
+    }, [calculateTextWidth, isMobile]);
 
     useEffect(() => {
         setShowCalculation(false);

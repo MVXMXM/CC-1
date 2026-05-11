@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import '../App.css';
+import useIsMobile from '../hooks/useIsMobile.js';
 
 const Operation = ({ character, onCharacterChange, addOperation }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [localCharacter, setLocalCharacter] = useState(character);
+  const isMobile = useIsMobile();
+  const buttonSize = isMobile ? 56 : 80;
+  const buttonFont = isMobile ? 24 : 32;
+  const menuGap = isMobile ? 14 : 20;
 
   const toggleMenu = () => {
     setIsExpanded((prev) => !prev);
@@ -37,17 +42,17 @@ const Operation = ({ character, onCharacterChange, addOperation }) => {
 
   const operationButtonStyle = {
     zIndex: 900,
-    width: isExpanded ? '10px' : '80px',
-    height: isExpanded ? '10px' : '80px',
+    width: isExpanded ? '10px' : `${buttonSize}px`,
+    height: isExpanded ? '10px' : `${buttonSize}px`,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#ffffff',
-    borderRadius: '80px',
+    borderRadius: `${buttonSize}px`,
     color: '#F15A22',
     textAlign: 'center',
     fontFamily: '"DM Sans"',
-    fontSize: isExpanded ? '0px' : '32px',
+    fontSize: isExpanded ? '0px' : `${buttonFont}px`,
     fontStyle: 'normal',
     fontWeight: 700,
     lineHeight: 'normal',
@@ -56,20 +61,20 @@ const Operation = ({ character, onCharacterChange, addOperation }) => {
 
   const operationMenuStyle = {
     opacity: isExpanded ? '1' : '0',
-    position: 'absolute', 
-    top: '50%', 
-    left: '50%', 
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
     transform: 'translate(-50%, -50%)',
     display: 'flex',
     flexDirection: 'column',
-    gap: '20px',
+    gap: `${menuGap}px`,
     zIndex: '9999',
     transition: 'opacity 0.1s ease, height 0.15s ease, width 0.15s ease',
   };
 
   const operationMenuButtonStyle = {
-    width: isExpanded ? '80px' : '0px',
-    height: isExpanded ? '80px' : '0px',
+    width: isExpanded ? `${buttonSize}px` : '0px',
+    height: isExpanded ? `${buttonSize}px` : '0px',
     opacity: isExpanded ? '1' : '0',
     pointerEvents: isExpanded ? 'auto' : 'none',
     cursor: isExpanded ? 'pointer' : 'default',
@@ -77,11 +82,11 @@ const Operation = ({ character, onCharacterChange, addOperation }) => {
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#ffffff',
-    borderRadius: '80px',
+    borderRadius: `${buttonSize}px`,
     color: '#F15A22',
     textAlign: 'center',
     fontFamily: '"DM Sans"',
-    fontSize: '32px',
+    fontSize: `${buttonFont}px`,
     fontStyle: 'normal',
     fontWeight: 700,
     lineHeight: 'normal',
@@ -94,7 +99,7 @@ const Operation = ({ character, onCharacterChange, addOperation }) => {
         <div style={operationButtonStyle} className="operationButton">{localCharacter}</div>
         {isExpanded && (
           <div style={operationMenuStyle}>
-            <div style={{ display: 'flex', flexDirection: 'row', gap: '20px' }}>
+            <div style={{ display: 'flex', flexDirection: 'row', gap: `${menuGap}px` }}>
               <div 
                 style={operationMenuButtonStyle} className="operationMenuButton"
                 onClick={(e) => {
@@ -112,7 +117,7 @@ const Operation = ({ character, onCharacterChange, addOperation }) => {
                   -
               </div>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'row', gap: '16px' }}>
+            <div style={{ display: 'flex', flexDirection: 'row', gap: `${menuGap}px` }}>
               <div 
                   style={operationMenuButtonStyle} className="operationMenuButton"
                   onClick={(e) => {

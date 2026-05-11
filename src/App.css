@@ -263,3 +263,61 @@ input::placeholder {
 .SettingsMenuItem label {
   cursor: pointer;
 }
+
+@media (max-width: 600px) {
+  .App {
+    --content-inline-padding: 8px;
+    --nav-inline-padding: 0px;
+    padding: 0 8px;
+  }
+
+  .Nav {
+    height: 56px;
+    font-size: 12px;
+    gap: 6px;
+  }
+
+  .Logo {
+    height: 24px;
+    margin-right: 8px;
+  }
+
+  .NavButtons {
+    gap: 8px;
+  }
+
+  .Git {
+    height: 28px;
+  }
+
+  .SettingsContainer {
+    height: 28px;
+    width: 28px;
+  }
+
+  .SettingsDropdown {
+    width: 200px;
+  }
+
+  .Footer {
+    height: 40px;
+    font-size: 11px;
+  }
+
+  .calculator {
+    gap: 12px;
+    padding: 24px 0;
+  }
+
+  input[type="text"] {
+    font-size: 22px;
+    padding: 16px 0px;
+    border-radius: 18px;
+  }
+
+  .solution {
+    font-size: 22px;
+    padding: 16px 16px;
+    border-radius: 18px;
+  }
+}

@@ -7,6 +7,7 @@ import API from './API.js';
 import CC1Logo from './assets/CC1.svg';
 import GitLogo from './assets/GitHub.png';
 import Gear from './assets/gear.svg';
+import useIsMobile from './hooks/useIsMobile.js';
 
 function App() {
   const [operations, setOperations] = useState([
@@ -21,6 +22,8 @@ function App() {
   const [conceptEmojis, setConceptEmojis] = useState({});
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [selectedModel, setSelectedModel] = useState('gpt4');
+  const isMobile = useIsMobile();
+  const conceptInitialWidth = isMobile ? '220px' : '316px';
 
   const handleCharacterChange = useCallback((id, newOperation) => {
     setOperations(prevOps => {
@@ -309,7 +312,7 @@ function App() {
                 onBlur={(value) => handleInputBlur(op.id, value)}
                 onDelete={() => handleInputDelete(op.id)}
                 currentEmoji={conceptEmojis[op.id] || "🤔"}
-                initialWidth="316px"
+                initialWidth={conceptInitialWidth}
               />
               <Operation
                 key={`operation-${op.id}`}
