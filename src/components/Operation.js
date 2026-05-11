@@ -41,10 +41,6 @@ const Operation = ({ character, onCharacterChange, addOperation }) => {
     return () => window.removeEventListener('resize', recompute);
   }, [isExpanded, buttonSize, menuGap]);
 
-  const toggleMenu = () => {
-    setIsExpanded((prev) => !prev);
-  };
-
   useEffect(() => {
     setLocalCharacter(character);
   }, [character]);
@@ -69,6 +65,19 @@ const Operation = ({ character, onCharacterChange, addOperation }) => {
     if (addOperation) {
       addOperation();
     }
+    const opNode = operationRef.current;
+    setTimeout(() => {
+      if (!opNode) return;
+      const inputs = Array.from(
+        document.querySelectorAll('.calculator input.conceptInput')
+      );
+      const next = inputs.find(
+        (input) =>
+          opNode.compareDocumentPosition(input) &
+          Node.DOCUMENT_POSITION_FOLLOWING
+      );
+      if (next) next.focus();
+    }, 0);
   };
 
   useEffect(() => {
@@ -160,7 +169,10 @@ const Operation = ({ character, onCharacterChange, addOperation }) => {
       <div
         ref={operationRef}
         className={`operation${isExpanded ? ' is-expanded' : ''}`}
-        onClick={toggleMenu}
+        tabIndex={0}
+        onClick={() => setIsExpanded(true)}
+        onFocus={() => setIsExpanded(true)}
+        onBlur={() => setIsExpanded(false)}
         style={{
           position: 'relative',
           width: `${buttonSize}px`,
@@ -169,6 +181,7 @@ const Operation = ({ character, onCharacterChange, addOperation }) => {
           alignItems: 'center',
           justifyContent: 'center',
           flexShrink: 0,
+          outline: 'none',
         }}
       >
         <div style={operationButtonStyle} className="operationButton">{localCharacter}</div>
