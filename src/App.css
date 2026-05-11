@@ -275,7 +275,7 @@ input::placeholder {
 @media (max-width: 600px) {
   .App {
     --content-inline-padding: 8px;
-    --nav-inline-padding: 0px;
+    --nav-inline-padding: 8px;
     padding: 0 8px;
   }
 
