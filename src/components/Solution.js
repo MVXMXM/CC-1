@@ -94,6 +94,7 @@ const Solution = ({ calcEquation, aiSolution, solutionEmoji, getSolution }) => {
             const isOperationWrapper = el?.classList?.contains?.('operation');
             if (!isConceptInput && !isOperationWrapper) return;
             e.preventDefault();
+            if (typeof el.blur === 'function') el.blur();
             runGetSolution();
         };
         window.addEventListener('keydown', onKeyDown);
