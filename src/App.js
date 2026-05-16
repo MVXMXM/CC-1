@@ -6,8 +6,14 @@ import Solution from './components/Solution.js'
 import API from './API.js';
 import CC1Logo from './assets/CC1.svg';
 import GitLogo from './assets/GitHub.png';
-import Gear from './assets/gear.svg';
+import OpenAILogo from './assets/OpenAI.svg';
+import AnthropicLogo from './assets/Anthropic.svg';
 import useIsMobile from './hooks/useIsMobile.js';
+
+const MODELS = [
+  { id: 'gpt4', label: 'GPT-5.4 mini', logo: OpenAILogo, alt: 'OpenAI' },
+  { id: 'claude', label: 'Claude Haiku 4.5', logo: AnthropicLogo, alt: 'Anthropic' },
+];
 
 function App() {
   const [operations, setOperations] = useState([
@@ -22,6 +28,7 @@ function App() {
   const [conceptEmojis, setConceptEmojis] = useState({});
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [selectedModel, setSelectedModel] = useState('gpt4');
+  const currentModel = MODELS.find(m => m.id === selectedModel) || MODELS[0];
   const isMobile = useIsMobile();
   const conceptInitialWidth = isMobile ? '240px' : '316px';
 
@@ -136,8 +143,8 @@ function App() {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      const settingsContainer = document.querySelector('.SettingsContainer');
-      if (settingsOpen && settingsContainer && !settingsContainer.contains(event.target)) {
+      const modelPicker = document.querySelector('.ModelPickerContainer');
+      if (settingsOpen && modelPicker && !modelPicker.contains(event.target)) {
         setSettingsOpen(false);
       }
     };
@@ -250,62 +257,55 @@ function App() {
     <div className="App">
       <div className='Nav'>
         <img src={CC1Logo} alt="CC-1" className='Logo'/>
-        <h1 className="NavTitle">"CONCEPT CALCULATOR"</h1>
-        <div className="NavButtons">
-          <div className="SettingsContainer">
-            <button
-              type="button"
-              className="SettingsToggle"
-              aria-label="Settings"
-              aria-expanded={settingsOpen}
-              aria-haspopup="menu"
-              onClick={() => setSettingsOpen(!settingsOpen)}
+        <div className="ModelPickerContainer">
+          <button
+            type="button"
+            className="ModelPicker"
+            aria-haspopup="listbox"
+            aria-expanded={settingsOpen}
+            onClick={() => setSettingsOpen(!settingsOpen)}
+          >
+            <span className="ModelPickerLabel">{currentModel.label}</span>
+            <svg
+              className={`ModelPickerChevron${settingsOpen ? ' is-open' : ''}`}
+              viewBox="0 0 12 12"
+              aria-hidden="true"
+              focusable="false"
             >
-              <img src={Gear} alt="" aria-hidden="true" className='Settings'/>
-            </button>
-            {settingsOpen && (
-              <div className="SettingsDropdown" role="menu" onClick={(e) => e.stopPropagation()}>
-                <label
-                  className="SettingsMenuItem"
-                  onClick={() => setSettingsOpen(false)}
-                >
-                  <input
-                    type="radio"
-                    name="model"
-                    value="gpt4"
-                    checked={selectedModel === 'gpt4'}
-                    onChange={() => {
-                      setSelectedModel('gpt4');
+              <path d="M2 4.5l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+          {settingsOpen && (
+            <div className="SettingsDropdown" role="listbox" onClick={(e) => e.stopPropagation()}>
+              {MODELS.map((m) => {
+                const isSelected = selectedModel === m.id;
+                return (
+                  <div
+                    key={m.id}
+                    className="SettingsMenuItem"
+                    role="option"
+                    aria-selected={isSelected}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      setSelectedModel(m.id);
                       setSettingsOpen(false);
                       if (operations.every(op => op.input.trim() !== '')) {
                         handleGetSolution();
                       }
                     }}
-                  />
-                  GPT-5.4 mini
-                </label>
-                <label
-                  className="SettingsMenuItem"
-                  onClick={() => setSettingsOpen(false)}
-                >
-                  <input
-                    type="radio"
-                    name="model"
-                    value="claude"
-                    checked={selectedModel === 'claude'}
-                    onChange={() => {
-                      setSelectedModel('claude');
-                      setSettingsOpen(false);
-                      if (operations.every(op => op.input.trim() !== '')) {
-                        handleGetSolution();
-                      }
-                    }}
-                  />
-                  Claude Haiku 4.5
-                </label>
-              </div>
-            )}
-          </div>
+                  >
+                    <span className="ModelLabel">
+                      <img src={m.logo} alt="" aria-hidden="true" className="ModelCreatorLogo"/>
+                      {m.label}
+                    </span>
+                    {isSelected && <span className="ModelCheck" aria-hidden="true">✓</span>}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+        <div className="NavButtons">
           <a
             href="https://github.com/MaximillianNYC/CC-1"
             target="_blank"
@@ -348,7 +348,7 @@ function App() {
         </div>
       </main>
       <div className='Footer'>
-          MADE BY <a href="https://www.maximillian.nyc" target="_blank" rel="noopener noreferrer">MAXIMILLIAN PIRAS</a>
+          "CONCEPT CALCULATOR" BY <a href="https://www.maximillian.nyc" target="_blank" rel="noopener noreferrer">MAXIMILLIAN PIRAS</a>
       </div>
     </div>
   );
