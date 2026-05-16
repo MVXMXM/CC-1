@@ -111,8 +111,7 @@ const ConceptInput = ({ value, onChange, onBlur, onDelete, currentEmoji, initial
             minWidth: 0,
         }}>
         <span
-            role="img"
-            aria-label="emoji"
+            aria-hidden="true"
             style={{
                 position: 'absolute',
                 left: isMobile ? '16px' : '24px',
@@ -127,6 +126,7 @@ const ConceptInput = ({ value, onChange, onBlur, onDelete, currentEmoji, initial
             ref={inputRef}
             className="conceptInput"
             type="text"
+            aria-label={`Concept ${id}`}
             value={inputValue}
             onChange={handleChange}
             placeholder={isFocused && inputValue === '' ? '' : placeholder}
@@ -144,7 +144,7 @@ const ConceptInput = ({ value, onChange, onBlur, onDelete, currentEmoji, initial
         />
         <button
             type="button"
-            tabIndex={-1}
+            aria-label="Remove concept"
             onClick={() => onDelete(id)}
             style={{
                 position: 'absolute',
@@ -153,10 +153,11 @@ const ConceptInput = ({ value, onChange, onBlur, onDelete, currentEmoji, initial
                 transform: 'translateY(-50%)',
                 background: 'none',
                 border: 'none',
+                padding: 0,
                 cursor: 'pointer'
             }}
         >
-            <img src={RemoveIcon} alt="Remove" style={{ width: isMobile ? '20px' : '24px', height: isMobile ? '20px' : '24px' }} />
+            <img src={RemoveIcon} alt="" aria-hidden="true" style={{ width: isMobile ? '20px' : '24px', height: isMobile ? '20px' : '24px' }} />
         </button>
         </div>
     );

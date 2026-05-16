@@ -57,20 +57,40 @@ a {
 }
 
 .SettingsContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.SettingsToggle {
   display: flex;
   align-items: center;
   justify-content: center;
   height: 32px;
   width: 32px;
+  padding: 0;
   border: 2px solid #CCCCCC;
   border-radius: 100%;
-  position: relative;
+  background: transparent;
   cursor: pointer;
   transition: background-color 0.5s ease;
 }
 
-.SettingsContainer:hover {
+.SettingsToggle:hover {
   background-color: #F1F1F1;
+}
+
+.SettingsToggle:focus-visible {
+  outline: 2px solid #F15A22;
+  outline-offset: 2px;
+}
+
+.NavTitle {
+  margin: 0;
+  font: inherit;
+  letter-spacing: inherit;
+  color: inherit;
 }
 
 .Settings {
@@ -139,6 +159,11 @@ input[type="radio"]:checked::after {
   height: 4px;
   border-radius: 50%;
   background-color: #F15A22;
+}
+
+input[type="radio"]:focus-visible {
+  outline: 2px solid #F15A22;
+  outline-offset: 2px;
 }
 
 .Footer {
@@ -247,6 +272,7 @@ input::placeholder {
 
 .solution {
   display: flex;
+  box-sizing: content-box;
   height: auto;
   width: auto;
   max-width: 100%;
@@ -257,6 +283,7 @@ input::placeholder {
   gap: 10px;
   border-radius: 24px;
   background: #FFF;
+  color: inherit;
   font-family: Helvetica;
   font-size: 32px;
   font-style: normal;
@@ -266,6 +293,16 @@ input::placeholder {
   overflow-wrap: anywhere;
   word-break: break-word;
   min-width: 0;
+}
+
+.solution:focus-visible {
+  outline: 2px solid #F15A22;
+  outline-offset: 2px;
+}
+
+.operationButton:focus-visible,
+.operationMenuButton:focus-visible {
+  outline: 2px solid #F15A22;
 }
 
 .SettingsMenuItem label {
@@ -298,7 +335,7 @@ input::placeholder {
     height: 28px;
   }
 
-  .SettingsContainer {
+  .SettingsToggle {
     height: 28px;
     width: 28px;
   }

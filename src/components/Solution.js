@@ -113,31 +113,37 @@ const Solution = ({ calcEquation, aiSolution, solutionEmoji, getSolution }) => {
         if (isLoading) {
             return (
                 <>
-                    <span role="img" aria-label="loading">⏳</span> loading
+                    <span aria-hidden="true">⏳</span> loading
                 </>
             );
         }
         if (showCalculation && aiSolution) {
-            return solutionEmoji ? `${solutionEmoji} ${aiSolution}` : aiSolution;
+            return solutionEmoji ? (
+                <>
+                    <span aria-hidden="true">{solutionEmoji}</span> {aiSolution}
+                </>
+            ) : aiSolution;
         }
         if (calcEquation) {
-            return (
-                <>
-                    calculate
-                </>
-            );
+            return 'calculate';
         }
-        return (
-            <>
-                ???
-            </>
-        );
+        return '???';
     };
 
+    const isDisabled = !calcEquation || showCalculation || isLoading;
+
     return (
-        <div ref={solutionRef} className="solution" style={solutionStyle} onClick={runGetSolution}>
+        <button
+            type="button"
+            ref={solutionRef}
+            className="solution"
+            style={solutionStyle}
+            aria-disabled={isDisabled}
+            aria-live="polite"
+            onClick={runGetSolution}
+        >
             {getDisplayContent()}
-        </div>
+        </button>
     );
 };
 

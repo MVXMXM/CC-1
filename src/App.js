@@ -250,53 +250,69 @@ function App() {
     <div className="App">
       <div className='Nav'>
         <img src={CC1Logo} alt="CC-1" className='Logo'/>
-        "CONCEPT CALCULATOR"
+        <h1 className="NavTitle">"CONCEPT CALCULATOR"</h1>
         <div className="NavButtons">
-          <div className="SettingsContainer" onClick={() => setSettingsOpen(!settingsOpen)}>
-            <img src={Gear} alt="settings" className='Settings'/>
+          <div className="SettingsContainer">
+            <button
+              type="button"
+              className="SettingsToggle"
+              aria-label="Settings"
+              aria-expanded={settingsOpen}
+              aria-haspopup="menu"
+              onClick={() => setSettingsOpen(!settingsOpen)}
+            >
+              <img src={Gear} alt="" aria-hidden="true" className='Settings'/>
+            </button>
             {settingsOpen && (
-              <div className="SettingsDropdown" onClick={(e) => e.stopPropagation()}>
-                <div className="SettingsMenuItem" 
-                     onClick={(event) => {
-                       event.stopPropagation();
-                       setSelectedModel('gpt4');
-                       setSettingsOpen(false);
-                       if (operations.every(op => op.input.trim() !== '')) {
-                         handleGetSolution();
-                       }
-                     }}>
+              <div className="SettingsDropdown" role="menu" onClick={(e) => e.stopPropagation()}>
+                <label
+                  className="SettingsMenuItem"
+                  onClick={() => setSettingsOpen(false)}
+                >
                   <input
-                    type="radio" 
-                    id="gpt4" 
-                    name="model" 
-                    checked={selectedModel === 'gpt4'}
-                    onChange={() => {}}
-                  />
-                  <label htmlFor="gpt4">GPT-5.4 mini</label>
-                </div>
-                <div className="SettingsMenuItem" 
-                     onClick={(event) => {
-                       event.stopPropagation();
-                       setSelectedModel('claude');
-                       setSettingsOpen(false);
-                       if (operations.every(op => op.input.trim() !== '')) {
-                         handleGetSolution();
-                       }
-                     }}>
-                  <input 
-                    type="radio" 
-                    id="claude" 
+                    type="radio"
                     name="model"
-                    checked={selectedModel === 'claude'}
-                    onChange={() => {}}
+                    value="gpt4"
+                    checked={selectedModel === 'gpt4'}
+                    onChange={() => {
+                      setSelectedModel('gpt4');
+                      setSettingsOpen(false);
+                      if (operations.every(op => op.input.trim() !== '')) {
+                        handleGetSolution();
+                      }
+                    }}
                   />
-                  <label htmlFor="claude">Claude Haiku 4.5</label>
-                </div>
+                  GPT-5.4 mini
+                </label>
+                <label
+                  className="SettingsMenuItem"
+                  onClick={() => setSettingsOpen(false)}
+                >
+                  <input
+                    type="radio"
+                    name="model"
+                    value="claude"
+                    checked={selectedModel === 'claude'}
+                    onChange={() => {
+                      setSelectedModel('claude');
+                      setSettingsOpen(false);
+                      if (operations.every(op => op.input.trim() !== '')) {
+                        handleGetSolution();
+                      }
+                    }}
+                  />
+                  Claude Haiku 4.5
+                </label>
               </div>
             )}
           </div>
-          <a href="https://github.com/MaximillianNYC/CC-1" target="_blank" rel="noopener noreferrer">
-            <img src={GitLogo} alt="GitHub" className='Git'/>
+          <a
+            href="https://github.com/MaximillianNYC/CC-1"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="View source on GitHub"
+          >
+            <img src={GitLogo} alt="" aria-hidden="true" className='Git'/>
           </a>
         </div>
       </div>
