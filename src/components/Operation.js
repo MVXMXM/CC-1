@@ -119,6 +119,8 @@ const Operation = ({ character, onCharacterChange, addOperation }) => {
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#ffffff',
+    border: 0,
+    padding: 0,
     borderRadius: `${buttonSize}px`,
     color: '#F15A22',
     textAlign: 'center',
@@ -127,6 +129,7 @@ const Operation = ({ character, onCharacterChange, addOperation }) => {
     fontStyle: 'normal',
     fontWeight: 700,
     lineHeight: 'normal',
+    cursor: 'pointer',
     transition: 'width 0.3s ease, height 0.3s ease, font-size 0.3s ease'
   };
 
@@ -153,6 +156,8 @@ const Operation = ({ character, onCharacterChange, addOperation }) => {
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#ffffff',
+    border: 0,
+    padding: 0,
     borderRadius: `${buttonSize}px`,
     color: '#F15A22',
     textAlign: 'center',
@@ -165,14 +170,33 @@ const Operation = ({ character, onCharacterChange, addOperation }) => {
     transition: 'width 0.15s ease, height 0.15s ease'
   };
 
+  const handleWrapperBlur = (e) => {
+    if (!operationRef.current?.contains(e.relatedTarget)) {
+      setIsExpanded(false);
+    }
+  };
+
+  const renderMenuButton = (op) => (
+    <button
+      type="button"
+      key={op}
+      style={operationMenuButtonStyle}
+      className="operationMenuButton"
+      aria-label={`Operator ${op}`}
+      onClick={(e) => {
+        e.stopPropagation();
+        handleButtonClick(op);
+      }}
+    >
+      {op}
+    </button>
+  );
+
   return (
       <div
         ref={operationRef}
         className={`operation${isExpanded ? ' is-expanded' : ''}`}
-        tabIndex={0}
-        onClick={() => setIsExpanded(true)}
-        onFocus={() => setIsExpanded(true)}
-        onBlur={() => setIsExpanded(false)}
+        onBlur={handleWrapperBlur}
         style={{
           position: 'relative',
           width: `${buttonSize}px`,
@@ -181,63 +205,33 @@ const Operation = ({ character, onCharacterChange, addOperation }) => {
           alignItems: 'center',
           justifyContent: 'center',
           flexShrink: 0,
-          outline: 'none',
         }}
       >
-        <div style={operationButtonStyle} className="operationButton">{localCharacter}</div>
+        <button
+          type="button"
+          className="operationButton"
+          aria-haspopup="menu"
+          aria-expanded={isExpanded}
+          aria-label={`Operator ${localCharacter}, choose`}
+          onClick={() => setIsExpanded(true)}
+          onFocus={() => setIsExpanded(true)}
+          style={operationButtonStyle}
+        >
+          {localCharacter}
+        </button>
         {isExpanded && (
-          <div style={operationMenuStyle}>
+          <div role="menu" style={operationMenuStyle}>
             {useColumn ? (
-              ['+', '-', '×', '÷'].map((op) => (
-                <div
-                  key={op}
-                  style={operationMenuButtonStyle}
-                  className="operationMenuButton"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleButtonClick(op);
-                  }}
-                >
-                  {op}
-                </div>
-              ))
+              ['+', '-', '×', '÷'].map(renderMenuButton)
             ) : (
               <>
                 <div style={{ display: 'flex', flexDirection: 'row', gap: `${menuGap}px` }}>
-                  <div
-                    style={operationMenuButtonStyle} className="operationMenuButton"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleButtonClick('+');
-                    }}>
-                      +
-                  </div>
-                  <div
-                    style={operationMenuButtonStyle} className="operationMenuButton"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleButtonClick('-');
-                    }}>
-                      -
-                  </div>
+                  {renderMenuButton('+')}
+                  {renderMenuButton('-')}
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'row', gap: `${menuGap}px` }}>
-                  <div
-                    style={operationMenuButtonStyle} className="operationMenuButton"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleButtonClick('×');
-                    }}>
-                      ×
-                  </div>
-                  <div
-                    style={operationMenuButtonStyle} className="operationMenuButton"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleButtonClick('÷');
-                    }}>
-                      ÷
-                  </div>
+                  {renderMenuButton('×')}
+                  {renderMenuButton('÷')}
                 </div>
               </>
             )}
