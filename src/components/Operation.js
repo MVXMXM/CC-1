@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import '../App.css';
 import useIsMobile from '../hooks/useIsMobile.js';
 
 const Operation = ({ character, onCharacterChange, addOperation }) => {

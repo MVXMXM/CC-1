@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
-import '../App.css';
 import useIsMobile from '../hooks/useIsMobile.js';
 
 const Solution = ({ calcEquation, aiSolution, solutionEmoji, getSolution }) => {
