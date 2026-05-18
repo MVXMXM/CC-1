@@ -17,6 +17,31 @@ code {
     monospace;
 }
 
+:root {
+  --accent: #F15A22;
+  --app-bg: #FFFFFF;
+  --panel-bg: #F1F1F1;
+  --surface: #FFFFFF;
+  --text: #000000;
+  --muted: #959595;
+  --hover-bg: #F1F1F1;
+  --dropdown-bg: #FFFFFF;
+  --dropdown-shadow: rgba(0, 0, 0, 0.1);
+  --icon-invert: 0;
+}
+
+html[data-theme="dark"] {
+  --app-bg: #0F0F0F;
+  --panel-bg: #1C1C1C;
+  --surface: #262626;
+  --text: #FFFFFF;
+  --muted: #6B6B6B;
+  --hover-bg: #333333;
+  --dropdown-bg: #262626;
+  --dropdown-shadow: rgba(0, 0, 0, 0.5);
+  --icon-invert: 1;
+}
+
 .App {
   /* Main + footer: aligns calculator with gray panel edges */
   --content-inline-padding: 16px;
@@ -27,13 +52,14 @@ code {
   align-items: stretch;
   justify-content: flex-start;
   text-align: center;
-  background-color: #FFFFFF;
+  background-color: var(--app-bg);
   height: 100dvh;
   width: 100%;
   max-width: 100%;
   min-width: 0;
   box-sizing: border-box;
   padding: 0 20px;
+  transition: background-color 0.2s ease;
 }
 
 a {
@@ -65,6 +91,10 @@ a {
   margin-right: 16px;
 }
 
+html[data-theme="dark"] .Logo {
+  filter: invert(1) hue-rotate(180deg);
+}
+
 .NavButtons {
   display: flex;
   flex-direction: row;
@@ -75,6 +105,36 @@ a {
 
 .Git {
   height: 32px;
+  filter: invert(var(--icon-invert));
+}
+
+.ThemeToggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--accent);
+  padding: 0;
+  transition: background-color 0.2s ease;
+}
+
+.ThemeToggle:hover {
+  background-color: var(--hover-bg);
+}
+
+.ThemeToggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.ThemeToggle svg {
+  width: 20px;
+  height: 20px;
 }
 
 .ModelPickerContainer {
@@ -110,11 +170,11 @@ a {
 }
 
 .ModelPicker:hover {
-  background-color: #F1F1F1;
+  background-color: var(--hover-bg);
 }
 
 .ModelPicker:focus-visible {
-  outline: 2px solid #F15A22;
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
@@ -123,11 +183,11 @@ a {
   top: calc(100% + 8px);
   left: 50%;
   transform: translateX(-50%);
-  background-color: white;
+  background-color: var(--dropdown-bg);
   border-radius: 24px;
   z-index: 100;
   width: 260px;
-  box-shadow: 0px 0px 30px 0px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 0px 30px 0px var(--dropdown-shadow);
 }
 
 .SettingsMenuItem {
@@ -138,7 +198,7 @@ a {
   padding: 16px;
   font-family: "JetBrains Mono", monospace;
   text-transform: uppercase;
-  color: black;
+  color: var(--text);
   font-size: 14px;
   border-radius: 16px;
   text-align: left;
@@ -149,7 +209,7 @@ a {
 }
 
 .SettingsMenuItem:hover {
-  background-color: #F1F1F1;
+  background-color: var(--hover-bg);
 }
 
 .ModelLabel {
@@ -169,6 +229,7 @@ a {
   height: 20px;
   flex-shrink: 0;
   color: #000000;
+  filter: invert(var(--icon-invert));
 }
 
 .Footer {
@@ -208,10 +269,11 @@ a {
   max-width: 100%;
   margin: 0;
   padding: 0 var(--content-inline-padding);
-  background-color: #F1F1F1;
+  background-color: var(--panel-bg);
   border-radius: 24px;
   overflow-x: hidden;
   overflow-y: auto;
+  transition: background-color 0.2s ease;
 }
 
 /* Scrollable <main> can receive focus on click in some UAs; it is not an interactive control */
@@ -235,7 +297,7 @@ a {
 }
 
 input[type="text"] {
-  caret-color: #F15A22;
+  caret-color: var(--accent);
   display: flex;
   height: auto;
   width: auto;
@@ -246,17 +308,18 @@ input[type="text"] {
   text-align: left;
   gap: 10px;
   border-radius: 24px;
-  background: #FFF;
-  color: #000000;
+  background: var(--surface);
+  color: var(--text);
   font-family: Helvetica;
   font-size: 32px;
   font-style: normal;
   line-height: normal;
   border: 0px;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
 input::placeholder {
-  color: #959595; 
+  color: var(--muted);
 }
 
 .operation, .operationMenuButton {
@@ -287,7 +350,7 @@ input::placeholder {
   text-align: left;
   gap: 10px;
   border-radius: 24px;
-  background: #FFF;
+  background: var(--surface);
   color: inherit;
   font-family: Helvetica;
   font-size: 32px;

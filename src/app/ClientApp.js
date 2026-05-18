@@ -30,6 +30,27 @@ export default function ClientApp() {
   const [conceptEmojis, setConceptEmojis] = useState({});
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [selectedModel, setSelectedModel] = useState('gpt4');
+  const [theme, setTheme] = useState('light');
+
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      const current = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+      setTheme(current);
+    }
+  }, []);
+
+  const toggleTheme = useCallback(() => {
+    setTheme(prev => {
+      const next = prev === 'dark' ? 'light' : 'dark';
+      if (typeof document !== 'undefined') {
+        document.documentElement.dataset.theme = next;
+      }
+      if (typeof window !== 'undefined') {
+        window.localStorage.setItem('theme', next);
+      }
+      return next;
+    });
+  }, []);
   const currentModel = MODELS.find(m => m.id === selectedModel) || MODELS[0];
   const isMobile = useIsMobile();
   const conceptInitialWidth = isMobile ? '240px' : '316px';
@@ -308,6 +329,24 @@ export default function ClientApp() {
           )}
         </div>
         <div className="NavButtons">
+          <button
+            type="button"
+            className="ThemeToggle"
+            onClick={toggleTheme}
+            aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            aria-pressed={theme === 'dark'}
+          >
+            {theme === 'dark' ? (
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="4"/>
+                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+              </svg>
+            )}
+          </button>
           <a
             href="https://github.com/MaximillianNYC/CC-1"
             target="_blank"

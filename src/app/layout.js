@@ -33,10 +33,21 @@ export const viewport = {
   themeColor: '#000000',
 };
 
+const themeInitScript = `(() => {
+  try {
+    const stored = localStorage.getItem('theme');
+    const theme = stored === 'dark' ? 'dark' : 'light';
+    document.documentElement.dataset.theme = theme;
+  } catch (e) {
+    document.documentElement.dataset.theme = 'light';
+  }
+})();`;
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link
