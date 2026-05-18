@@ -3,10 +3,10 @@
   "version": "0.2.0",
   "private": true,
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.32.1",
-    "@vercel/postgres": "^0.9.0",
+    "@anthropic-ai/sdk": "^0.96.0",
+    "@neondatabase/serverless": "^1.0.2",
     "next": "^15.0.3",
-    "openai": "^4.73.0",
+    "openai": "^6.38.0",
     "prop-types": "^15.8.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
