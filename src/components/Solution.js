@@ -102,8 +102,8 @@ const Solution = ({ calcEquation, aiSolution, solutionEmoji, getSolution }) => {
 
     const solutionStyle = {
         transition: 'color 0.1s ease, background 0.3s ease, opacity 0.3s ease, transform 0.3s ease, width 0.3s ease',
-        color: showCalculation ? '#000000' : (calcEquation ? '#ffffff' : '#959595'),
-        background: showCalculation ? '#ffffff' : (calcEquation ? '#F15A22' : '#ffffff'),
+        color: showCalculation ? 'var(--text)' : (calcEquation ? '#ffffff' : 'var(--muted)'),
+        background: showCalculation ? 'var(--surface)' : (calcEquation ? '#F15A22' : 'var(--surface)'),
         cursor: calcEquation && !showCalculation && !isLoading ? 'pointer' : 'not-allowed',
         fontWeight: showCalculation || calcEquation ? 500 : 300,
         width: solutionRef.current ? solutionRef.current.style.width : defaultWidth,

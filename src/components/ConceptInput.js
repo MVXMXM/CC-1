@@ -157,7 +157,7 @@ const ConceptInput = ({ value, onChange, onBlur, onDelete, currentEmoji, initial
                 cursor: 'pointer'
             }}
         >
-            <img src={RemoveIcon} alt="" aria-hidden="true" style={{ width: isMobile ? '20px' : '24px', height: isMobile ? '20px' : '24px' }} />
+            <img src={RemoveIcon} alt="" aria-hidden="true" style={{ width: isMobile ? '20px' : '24px', height: isMobile ? '20px' : '24px', filter: 'invert(var(--icon-invert))' }} />
         </button>
         </div>
     );
