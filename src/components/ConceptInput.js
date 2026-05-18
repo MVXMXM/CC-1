@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import '../App.css';
-import RemoveIcon from '../assets/Remove.svg';
 import useIsMobile from '../hooks/useIsMobile.js';
+
+const RemoveIcon = '/assets/Remove.svg';
 
 const ConceptInput = ({ value, onChange, onBlur, onDelete, currentEmoji, initialWidth = '316px', placeholder = 'add concept', id }) => {
     const [inputValue, setInputValue] = useState(value);

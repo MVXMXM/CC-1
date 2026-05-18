@@ -1,21 +1,23 @@
+'use client';
+
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import './App.css';
-import ConceptInput from './components/ConceptInput.js';
-import Operation from './components/Operation.js';
-import Solution from './components/Solution.js'
-import API from './API.js';
-import CC1Logo from './assets/CC1.svg';
-import GitLogo from './assets/GitHub.png';
-import OpenAILogo from './assets/OpenAI.svg';
-import AnthropicLogo from './assets/Anthropic.svg';
-import useIsMobile from './hooks/useIsMobile.js';
+import ConceptInput from '@/components/ConceptInput.js';
+import Operation from '@/components/Operation.js';
+import Solution from '@/components/Solution.js';
+import API from '@/lib/api-client.js';
+import useIsMobile from '@/hooks/useIsMobile.js';
+
+const CC1Logo = '/assets/CC1.svg';
+const GitLogo = '/assets/GitHub.png';
+const OpenAILogo = '/assets/OpenAI.svg';
+const AnthropicLogo = '/assets/Anthropic.svg';
 
 const MODELS = [
   { id: 'gpt4', label: 'GPT-5.4 mini', logo: OpenAILogo, alt: 'OpenAI' },
   { id: 'claude', label: 'Claude Haiku 4.5', logo: AnthropicLogo, alt: 'Anthropic' },
 ];
 
-function App() {
+export default function ClientApp() {
   const [operations, setOperations] = useState([
     { id: 1, input: '', operation: '+' },
     { id: 2, input: '', operation: '=' }
@@ -56,12 +58,12 @@ function App() {
         { id: newId + 1, input: '', operation: '=' }
       ];
     });
-    
+
     setConceptEmojis(prev => {
       const newId = Math.max(...Object.keys(prev).map(Number), 0) + 1;
-      return { 
-        ...prev, 
-        [newId + 1]: '🤔' 
+      return {
+        ...prev,
+        [newId + 1]: '🤔'
       };
     });
   }, []);
@@ -78,7 +80,7 @@ function App() {
   }, []);
 
   const handleInputChange = useCallback((id, value) => {
-    setOperations(prev => prev.map(op => 
+    setOperations(prev => prev.map(op =>
         op.id === id ? { ...op, input: value } : op
     ));
   }, []);
@@ -353,5 +355,3 @@ function App() {
     </div>
   );
 }
-
-export default App;
